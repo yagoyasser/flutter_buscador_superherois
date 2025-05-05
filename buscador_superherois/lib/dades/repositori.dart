@@ -1,6 +1,5 @@
-import 'dart:convert';
-
 import 'package:buscador_superherois/dades/models/resposta_superheroi.dart';
+import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 class Repositori {
