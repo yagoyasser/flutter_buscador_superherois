@@ -1,10 +1,20 @@
+import 'package:buscador_superherois/dades/models/resposta_superheroi.dart';
+import 'package:buscador_superherois/dades/repositori.dart';
 import 'package:flutter/material.dart';
 
-class PantallaBuscadorSuperherois extends StatelessWidget {
+class PantallaBuscadorSuperherois extends StatefulWidget {
   const PantallaBuscadorSuperherois({super.key});
 
   @override
+  State<PantallaBuscadorSuperherois> createState() => _PantallaBuscadorSuperheroisState();
+}
+
+class _PantallaBuscadorSuperheroisState extends State<PantallaBuscadorSuperherois> {
+  @override
   Widget build(BuildContext context) {
+    Future<RespostaSuperheroi?>? _informacioSuperheroi;
+    Repositori repositori = Repositori();
+
     return Scaffold(
       appBar: AppBar(title: Text("Buscador superherois"), centerTitle: true),
       body: Center(
@@ -20,8 +30,25 @@ class PantallaBuscadorSuperherois extends StatelessWidget {
                       prefixIcon: Icon(Icons.search),
                       border: OutlineInputBorder(),
                     ),
-                    onChanged: (text) {},
+                    onChanged: (text) {
+                      setState(() {
+                        _informacioSuperheroi = repositori.portarInformacioSuperheroi(text);
+                      });
+                    },
                   ),
+                  FutureBuilder(
+                    future: _informacioSuperheroi,
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return CircularProgressIndicator();
+                      } else if (snapshot.hasError) {
+                        return Text("Error: ${snapshot.error}");
+                      } else if (snapshot.hasData) {
+                        return Text("${snapshot.data?.resposta}");
+                      } else {
+                        return Text("No hi ha resultats");
+                      }
+                    })
                 ],
               ),
             ),
